@@ -13,7 +13,7 @@ import (
 	_ "github.com/jackc/pgx/stdlib"
 )
 
-var dsn string = "postgres://postgres:917836@localhost:5432/lightning?"
+var dsn string = "postgres://postgres:postgres@localhost:5432/lightning?"
 
 func main() {
 	//соединение с БД
