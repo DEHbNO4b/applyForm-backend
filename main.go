@@ -13,7 +13,7 @@ import (
 	_ "github.com/jackc/pgx/stdlib"
 )
 
-var dsn string = "postgres://postgres:postgres@localhost:5432/lightning?"
+var dsn string = "postgres://tykym:tykym@localhost:5432/lightning?"
 
 func main() {
 	//соединение с БД
@@ -58,7 +58,7 @@ func main() {
 	postRouter.HandleFunc("/applyes", ah.PostApplyes)
 
 	//CORS
-	ch := gohandlers.CORS(gohandlers.AllowedOrigins([]string{"http://localhost:3000"}))
+	ch := gohandlers.CORS(gohandlers.AllowedOrigins([]string{"*"}))
 	s := &http.Server{
 		Addr:         ":9090",
 		Handler:      ch(sm),
