@@ -82,6 +82,22 @@ func (f Apply) GetApplyes(rw http.ResponseWriter, r *http.Request) {
 	rw.Write(data)
 
 }
+func (f Apply) DelApply(rw http.ResponseWriter, r *http.Request) {
+	f.l.Println("in delete apply method")
+	vars := mux.Vars(r)
+	id, err := strconv.Atoi(vars["id"])
+	if err != nil {
+		http.Error(rw, "unable to convert id", http.StatusBadRequest)
+	}
+
+	_, err = f.db.Exec(`DELETE FROM applydata where id =$1`, id)
+
+	if err != nil {
+		f.l.Println(err)
+		http.Error(rw, "unable to delete apply data", http.StatusInternalServerError)
+	}
+
+}
 
 func (f Apply) PostApplyes(rw http.ResponseWriter, r *http.Request) {
 	apply := data.ApplyData{}

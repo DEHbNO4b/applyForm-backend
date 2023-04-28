@@ -2,6 +2,8 @@ package main
 
 import (
 	"database/sql"
+	"flag"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -11,12 +13,39 @@ import (
 	gohandlers "github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	_ "github.com/jackc/pgx/stdlib"
+	"gopkg.in/yaml.v2"
 )
 
-var dsn string = "postgres://tykym:tykym@localhost:5432/lightning?"
+// var dsn string = "postgres://tykym:tykym@localhost:5432/tykym?"
+type Config struct {
+	Username string
+	Password string
+	Host     string
+	Port     string
+	Dbname   string
+}
+
+func (c *Config) parse() {
+	var configPath = flag.String("config", "./config/config.yml", "path to config file")
+	flag.Parse()
+	configYml, err := ioutil.ReadFile(*configPath)
+	if err != nil {
+		log.Fatalf("reading config.yml error %v", err)
+	}
+	err = yaml.Unmarshal(configYml, c)
+	if err != nil {
+		log.Fatalf("can't parse congig.yml: %v", err)
+	}
+}
+
+var mainConfig = Config{}
 
 func main() {
+	//считывание файла конфигурации
+	mainConfig.parse()
 	//соединение с БД
+
+	dsn := "postgres://" + mainConfig.Username + ":" + mainConfig.Password + "@" + mainConfig.Host + ":" + mainConfig.Port + "/" + mainConfig.Dbname + "?"
 	db, err := sql.Open("pgx", dsn)
 	if err != nil {
 		panic(err)
@@ -56,6 +85,9 @@ func main() {
 
 	postRouter := sm.Methods(http.MethodPost).Subrouter()
 	postRouter.HandleFunc("/applyes", ah.PostApplyes)
+
+	delRouter := sm.Methods(http.MethodDelete).Subrouter()
+	delRouter.HandleFunc("/apllye/{id}", ah.DelApply)
 
 	//CORS
 	ch := gohandlers.CORS(gohandlers.AllowedOrigins([]string{"*"}))
