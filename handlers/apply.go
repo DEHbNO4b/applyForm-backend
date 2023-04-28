@@ -22,15 +22,8 @@ func NewApply(l *log.Logger, db *sql.DB) *Apply {
 	return &Apply{l: l, db: db}
 }
 
-//	func (f Apply) GetStartPage(rw http.ResponseWriter, r *http.Request) {
-//		f.l.Println("in get start  page method")
-//		err := tpl.Execute(rw, nil)
-//		if err != nil {
-//			f.l.Println(err)
-//		}
-//	}
 func (f Apply) GetApply(rw http.ResponseWriter, r *http.Request) {
-	f.l.Println("in get apply method")
+	//f.l.Println("in get apply method")
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {

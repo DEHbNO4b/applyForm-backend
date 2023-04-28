@@ -57,15 +57,12 @@ func main() {
 		lastName varchar(20),
 		fathersName varchar(20),
 		borneDate varchar(20),
-		adress1 text,
-		passportSeries varchar(20),
 		passportNumber varchar(20),
 		dateIssue varchar(20),
 		propertyType varchar(20),
 		propertyNumber1 varchar(20),
 		propertyNumber2 varchar(20),
 		amount varchar(20),
-		adress2 text,
 		date varchar(20)
 
 	) `)
@@ -87,13 +84,15 @@ func main() {
 	postRouter.HandleFunc("/applyes", ah.PostApplyes)
 
 	delRouter := sm.Methods(http.MethodDelete).Subrouter()
-	delRouter.HandleFunc("/apllye/{id}", ah.DelApply)
+	delRouter.HandleFunc("/del/{id}", ah.DelApply)
 
 	//CORS
 	ch := gohandlers.CORS(gohandlers.AllowedOrigins([]string{"*"}))
+	mh := gohandlers.CORS(gohandlers.AllowedMethods([]string{"DELETE"}))
+
 	s := &http.Server{
 		Addr:         ":9090",
-		Handler:      ch(sm),
+		Handler:      mh(ch(sm)),
 		IdleTimeout:  120 * time.Second,
 		ReadTimeout:  2 * time.Second,
 		WriteTimeout: 2 * time.Second,
