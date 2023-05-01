@@ -7,7 +7,7 @@ import (
 )
 
 type ApplyData struct {
-	Id              string `json:"apply_id,omitempty"`
+	Id              int    `json:"apply_id,omitempty"`
 	FirstName       string `json:"first_name,omitempty"`
 	LastName        string `json:"last_name,omitempty"`
 	FathersName     string `json:"fathers_name,omitempty"`
@@ -34,6 +34,17 @@ func (ad *ApplyData) AddApplyData(db *sql.DB) error {
 						VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14);
 					`, ad.FirstName, ad.LastName, ad.FathersName, ad.BorneDate, ad.Adress1, ad.PassportSeries, ad.PassportNumber,
 		ad.DateIssue, ad.PropertyType, ad.PropertyNumber1, ad.PropertyNumber2, ad.Adress2, ad.Amount, ad.Date)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+func (ad *ApplyData) UpdateApplyData(db *sql.DB) error {
+	_, err := db.Exec(`UPDATE applydata SET firstName = $1 , lastName =$2, fathersName=$3, bornedate=$4, passportNumber=$5,
+									dateIssue=$6, propertyType=$7, propertyNumber1=$8, propertyNumber2=$9, amount=$10, date=$11
+									WHERE id = $12 ;`,
+		ad.FirstName, ad.LastName, ad.FathersName, ad.BorneDate, ad.PassportNumber,
+		ad.DateIssue, ad.PropertyType, ad.PropertyNumber1, ad.PropertyNumber2, ad.Amount, ad.Date, ad.Id)
 	if err != nil {
 		return err
 	}

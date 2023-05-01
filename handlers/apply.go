@@ -106,3 +106,27 @@ func (f Apply) PostApplyes(rw http.ResponseWriter, r *http.Request) {
 	}
 
 }
+func (f Apply) PutApplyes(rw http.ResponseWriter, r *http.Request) {
+	f.l.Print("in put apply handler")
+
+	vars := mux.Vars(r)
+	id, err := strconv.Atoi(vars["id"])
+	if err != nil {
+		http.Error(rw, "unable to convert id", http.StatusBadRequest)
+	}
+
+	apply := data.ApplyData{}
+	err = apply.FromJSON(r.Body)
+	if err != nil {
+		f.l.Println(err)
+		http.Error(rw, "Unable to unmarshal JSON", http.StatusBadRequest)
+	}
+
+	apply.Id = id
+	err = apply.UpdateApplyData(f.db)
+	if err != nil {
+		f.l.Println(err)
+		http.Error(rw, "Unable to unmarshal JSON", http.StatusBadRequest)
+	}
+
+}

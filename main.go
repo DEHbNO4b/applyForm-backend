@@ -86,9 +86,12 @@ func main() {
 	delRouter := sm.Methods(http.MethodDelete).Subrouter()
 	delRouter.HandleFunc("/del/{id}", ah.DelApply)
 
+	putRouter := sm.Methods("PUT").Subrouter()
+	putRouter.HandleFunc("/putapply/{id}", ah.PutApplyes)
+
 	//CORS
 	ch := gohandlers.CORS(gohandlers.AllowedOrigins([]string{"*"}))
-	mh := gohandlers.CORS(gohandlers.AllowedMethods([]string{"DELETE"}))
+	mh := gohandlers.CORS(gohandlers.AllowedMethods([]string{"DELETE", "PUT"}))
 
 	s := &http.Server{
 		Addr:         ":9090",
